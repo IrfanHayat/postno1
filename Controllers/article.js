@@ -62,10 +62,16 @@ const getAllArticles = async (req, res) => {
 };
 
 const getTopArticle = async (req, res) => {
-	const topArticle = await Model.ArticleModel.findOne({}, { sort: -1 });
-	res.status(status.OK).send({
-		topArticle,
-	});
+	const topArticle = await Model.ArticleModel.findOne({}).sort({ _id: -1 });
+	if (topArticle) {
+		res.status(status.OK).send({
+			topArticle,
+		});
+	} else {
+		res.status(status.INTERNAL_SERVER_ERROR).send({
+			Message: 'Unable to find Post',
+		});
+	}
 };
 
 export default {
