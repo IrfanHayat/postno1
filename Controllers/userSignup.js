@@ -3,7 +3,7 @@ import Model from '../Models/Model';
 import awsHandler from './aws';
 
 const userSignUp = async (req, res, next) => {
-	const { email, password, imageUrl } = req.body;
+	const { name, email, password, imageUrl } = req.body;
 	const query = { email };
 
 	if (imageUrl !== '' && req.file !== undefined) {
@@ -21,6 +21,7 @@ const userSignUp = async (req, res, next) => {
 				const hashedPassword = await bcryptjs.hash(password, 12);
 				const User = new Model.UserModel({
 					email,
+					name,
 					password: hashedPassword,
 					imageUrl: image,
 					userType: 'user',

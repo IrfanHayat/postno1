@@ -46,10 +46,10 @@ const deleteArticle = async (req, res) => {
 			Message: 'Unable to Delete.',
 		});
 	}
-};
+};//
 
 const getAllArticles = async (req, res) => {
-	const article = await Model.ArticleModel.find({});
+	const article = await Model.ArticleModel.find({}).populate('category');
 	if (article) {
 		res.status(status.OK).send({
 			article,
@@ -61,8 +61,13 @@ const getAllArticles = async (req, res) => {
 	}
 };
 
+
+
+
 const getTopArticle = async (req, res) => {
-	const topArticle = await Model.ArticleModel.findOne({}).sort({ _id: -1 });
+	const topArticle = await Model.ArticleModel.findOne({})
+		.populate('category')
+		.sort({ _id: -1 });
 	if (topArticle) {
 		res.status(status.OK).send({
 			topArticle,

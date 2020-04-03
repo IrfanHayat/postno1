@@ -47,10 +47,10 @@ app.use('/vote', Router.VoteRouter);
 
 app.use('/admin', Router.AdminRouter);
 
+app.use('/category', Router.CategoryRouter);
+
 app.use(errorHandler);
 
 const port = process.env.PORT || 5000;
 
-app.listen(port, () =>
-	console.log(`App listening On port http://localhost:${port}`),
-);
+app.listen(port, () => console.log(`App listening On port http://localhost:${port}`));
