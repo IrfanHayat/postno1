@@ -1,12 +1,6 @@
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable no-param-reassign */
-/* eslint-disable array-callback-return */
 import status from 'http-status';
 import Model from '../Models/Model';
 import awsHandler from './aws';
-
-// to get the highest liked post
-// same logic as above..with just the increment of temporary variables  {{topPostIndex , topPostCount}} to find the highest liked post and its index
 
 const addArticle = async (req, res, next) => {
 	const { postBy, description, mediaUrl } = req.body;
@@ -46,7 +40,7 @@ const deleteArticle = async (req, res) => {
 			Message: 'Unable to Delete.',
 		});
 	}
-};//
+}; //
 
 const getAllArticles = async (req, res) => {
 	const article = await Model.ArticleModel.find({}).populate('category');
@@ -60,9 +54,6 @@ const getAllArticles = async (req, res) => {
 		});
 	}
 };
-
-
-
 
 const getTopArticle = async (req, res) => {
 	const topArticle = await Model.ArticleModel.findOne({})

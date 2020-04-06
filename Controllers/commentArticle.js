@@ -13,9 +13,7 @@ const addCommentReply = (req, res) => {
 
 		(err, doc) => {
 			if (err) {
-				res
-					.status(500)
-					.send({ Message: 'Internal Server error. Cannot add reply' });
+				res.status(500).send({ Message: 'Internal Server error. Cannot add reply' });
 			} else {
 				res.status(200).send(doc.replies[doc.replies.length - 1]);
 			}
@@ -25,22 +23,15 @@ const addCommentReply = (req, res) => {
 
 const deleteCommentReply = (req, res) => {
 	const { commentId, replyId } = req.body;
-	Model.CommentModel.updateOne(
-		{ _id: commentId },
-		{ $pull: { replies: { _id: replyId } } },
-		{ multi: true },
-		err => {
-			if (err) {
-				res
-					.status(500)
-					.send({ Message: 'Internal Server error. Cannot add reply' });
-			} else {
-				res.status(200).send({
-					Message: 'Reply deleted Successfully',
-				});
-			}
-		},
-	);
+	Model.CommentModel.updateOne({ _id: commentId }, { $pull: { replies: { _id: replyId } } }, { multi: true }, err => {
+		if (err) {
+			res.status(500).send({ Message: 'Internal Server error. Cannot add reply' });
+		} else {
+			res.status(200).send({
+				Message: 'Reply deleted Successfully',
+			});
+		}
+	});
 };
 
 const addCommentRefToArticle = (articleId, commentId) => {
@@ -52,9 +43,7 @@ const addCommentRefToArticle = (articleId, commentId) => {
 			{ upsert: true, new: true },
 			(err, doc) => {
 				if (err) {
-					reject(
-						`Internal Server error. Cannot add comments reference in article ${err}`,
-					);
+					reject(`Internal Server error. Cannot add comments reference in article ${err}`);
 				} else {
 					resolve(doc);
 				}

@@ -28,4 +28,33 @@ const addCategory = async (req, res, next) => {
 	}
 };
 
-export default addCategory;
+const getAllCategory = async (req, res, next) => {
+	try {
+		const getCategory = await Model.CategoryModel.find({});
+		if (getCategory) {
+			res.status(200).json(getCategory);
+		} else {
+			res.status(status.INTERNAL_SERVER_ERROR).json({ message: 'No category found' });
+		}
+	} catch (error) {
+		res.status(500);
+		next(new Error(error));
+	}
+};
+
+const deleteCategory = async (req, res, next) => {
+	const { _id } = req.body;
+	try {
+		const deletecategory = await Model.CategoryModel.deleteOne({ _id });
+		if (deletecategory) {
+			res.status(200).json(deletecategory);
+		} else {
+			res.status(status.INTERNAL_SERVER_ERROR).json('Data not delete successfully');
+		}
+	} catch (error) {
+		res.status(500);
+		next(new Error(error));
+	}
+};
+
+export default { addCategory, deleteCategory, getAllCategory };

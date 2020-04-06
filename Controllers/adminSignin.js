@@ -8,8 +8,7 @@ const createToken = (user, res, next) => {
 		name,
 		userType,
 	};
-	console.log(payload);
-	// create a token
+
 	jwt.sign(
 		payload,
 		process.env.JwtSecret,
@@ -17,12 +16,10 @@ const createToken = (user, res, next) => {
 			expiresIn: '1d',
 		},
 		(err, token) => {
-			// Error Create the Token
 			if (err) {
 				res.status(500);
 				next(new Error('Unable to generate Token.'));
 			} else {
-				// Token Created
 				res.json({
 					token,
 				});

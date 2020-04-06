@@ -43,8 +43,6 @@ app.use('/post', Router.ArticleRouter);
 
 app.use('/comment', Router.CommentRouter);
 
-app.use('/vote', Router.VoteRouter);
-
 app.use('/admin', Router.AdminRouter);
 
 app.use('/category', Router.CategoryRouter);
