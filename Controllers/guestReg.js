@@ -1,11 +1,13 @@
 import Model from '../Models/Model';
+import awsHandler from './aws';
 
-const guestReg = (req, res, next) => {
-	const { name } = req.body;
+const guestReg = async (req, res, next) => {
+	const { name, imageUrl } = req.body;
 
-	Model.UserModel.findOne({ name: req.body.name })
-		.then(user => {
-			console.log(user);
+	if (imageUrl !== '' && req.file !== undefined) {
+		const image = await awsHandler.UploadToAws(req.file);
+		try {
+			const user = await Model.UserModel.findOne({ name: req.body.name });
 			if (user) {
 				if (user.name === name) {
 					res.status(200);
@@ -15,6 +17,7 @@ const guestReg = (req, res, next) => {
 				const User = new Model.UserModel({
 					name,
 					userType: 'guest',
+					imageUrl: image,
 				});
 				User.save()
 					.then(SavedUser => {
@@ -29,11 +32,11 @@ const guestReg = (req, res, next) => {
 						next(new Error('Unable to Create User. Please Try later.'));
 					});
 			}
-		})
-		.catch(err => {
+		} catch (error) {
 			res.status(500);
-			next(new Error(err));
-		});
+			next(new Error(error));
+		}
+	}
 };
 
 export default guestReg;

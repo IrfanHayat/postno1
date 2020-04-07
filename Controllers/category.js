@@ -1,9 +1,12 @@
 import status from 'http-status';
 import Model from '../Models/Model';
+import awsHandler from './aws';
 
 const addCategory = async (req, res, next) => {
 	const { category } = req.body;
+	const image = await awsHandler.UploadToAws(req.file);
 	const count = await Model.CategoryModel.find({ category }).count();
+
 	if (count.length > 0) {
 		res.status(status.INTERNAL_SERVER_ERROR).send({
 			Message: 'Category already Exist',
@@ -13,6 +16,7 @@ const addCategory = async (req, res, next) => {
 			const categoryAdd = new Model.CategoryModel({
 				category,
 				slug: category.toLowerCase(),
+				imageUrl: image,
 			});
 			const savedCategory = await categoryAdd.save();
 			if (savedCategory) {

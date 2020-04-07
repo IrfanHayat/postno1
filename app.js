@@ -47,6 +47,10 @@ app.use('/admin', Router.AdminRouter);
 
 app.use('/category', Router.CategoryRouter);
 
+app.use('/rating', Router.RatingRouter);
+
+app.use('/user', Router.UserRouter);
+
 app.use(errorHandler);
 
 const port = process.env.PORT || 5000;

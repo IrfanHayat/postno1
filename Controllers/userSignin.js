@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import Model from '../Models/Model';
 
 const createToken = (user, res, next) => {
-	const { id, email, imageUrl } = user;
+	const { id, email, name, imageUrl } = user;
 	const payload = { _id: id, email, imageUrl };
 	// create a token
 	jwt.sign(
@@ -22,6 +22,9 @@ const createToken = (user, res, next) => {
 				// Token Created
 				res.json({
 					token,
+					email,
+					name,
+					imageUrl,
 				});
 			}
 		},

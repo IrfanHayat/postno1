@@ -4,6 +4,8 @@ import ArticleRouter from './article';
 import AdminRouter from './admin';
 import CommentRouter from './comment';
 import CategoryRouter from './category';
+import RatingRouter from './rating';
+import UserRouter from './user';
 
 export default {
 	SignupRouter,
@@ -12,4 +14,6 @@ export default {
 	AdminRouter,
 	CommentRouter,
 	CategoryRouter,
+	RatingRouter,
+	UserRouter,
 };

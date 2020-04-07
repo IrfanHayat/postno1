@@ -10,13 +10,8 @@ const upload = multer({
 });
 const signUpRouter = express.Router();
 
-signUpRouter.post(
-	'/',
-	upload.single('imageUrl'),
-	userValidator.userSignup,
-	userSignUp,
-);
+signUpRouter.post('/', upload.single('imageUrl'), userValidator.userSignup, userSignUp);
 
-signUpRouter.post('/guest', userValidator.guestSignup, guestReg);
+signUpRouter.post('/guest', upload.single('imageUrl'), userValidator.guestSignup, guestReg);
 
 export default signUpRouter;
