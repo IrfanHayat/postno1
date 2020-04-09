@@ -5,19 +5,17 @@ import status from 'http-status';
 import morgan from 'morgan';
 import helmet from 'helmet';
 import compression from 'compression';
-import passport from 'passport';
 import dbConnection from './Connection/dbConnect';
 import Router from './Routes/Router';
+
 import errorHandler from './Middlewares/errorHandler';
+import verifyToken from './Middlewares/verifyToken';
 
 dbConnection();
 
 const app = express();
 
 // initialize passport
-
-app.use(passport.initialize());
-app.use(passport.session());
 
 app.use(morgan('dev'));
 app.use(helmet());
@@ -30,6 +28,8 @@ app.use(
 );
 
 app.use(express.json());
+
+app.use(verifyToken.verifyTokenSetUser);
 
 app.get('/', (req, res) => {
 	res.status(status.OK).send({ Message: 'Connected', status: status.OK });

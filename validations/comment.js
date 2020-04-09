@@ -1,13 +1,11 @@
 import status from 'http-status';
 
 const addComment = (req, res, next) => {
-	const { resourceId, text, userId } = req.body;
+	const { resourceId, text } = req.body;
 
-	if (!resourceId || !text || !userId) {
+	if (!resourceId || !text) {
 		res.status(status.BAD_REQUEST);
-		next(
-			new Error('ResourceID, text and userId Must be Defined in request body'),
-		);
+		next(new Error('ResourceID, text and userId Must be Defined in request body'));
 	} else {
 		next();
 	}
@@ -29,9 +27,7 @@ const addCommentReply = (req, res, next) => {
 
 	if (!commentId || !reply || !reply.text || !reply.userId) {
 		res.status(status.BAD_REQUEST);
-		next(
-			new Error('commentID, text and userId Must be Defined in request body'),
-		);
+		next(new Error('commentID, text and userId Must be Defined in request body'));
 	} else {
 		next();
 	}

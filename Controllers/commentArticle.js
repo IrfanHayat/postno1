@@ -53,29 +53,39 @@ const addCommentRefToArticle = (articleId, commentId) => {
 };
 
 // add Comment
-const addComment = (req, res) => {
-	const { resourceId, text, userId } = req.body;
-	const comment = new Model.CommentModel({
-		resourceId,
-		text,
-		userId,
-	});
-	comment
-		.save()
-		.then(savedComment => {
-			addCommentRefToArticle(resourceId, savedComment._id);
-			res.status(status.OK).send({
-				savedComment,
-				Message: 'Comment Created Successfully',
-				type: status.Ok,
-			});
-		})
-		.catch(err => {
-			res.status(status.INTERNAL_SERVER_ERROR).send({
-				Message: 'Can not create Comment ',
-				err,
-			});
+const addComment = async (req, res) => {
+	const { _id } = req.user;
+	const { resourceId, text } = req.body;
+
+	try {
+		const comment = await Model.CommentModel.create({
+			text,
+			resourceId,
+			userId: _id,
 		});
+
+		await addCommentRefToArticle(resourceId, comment._id);
+
+		const populatedComment = await Model.CommentModel.populate(comment, {
+			path: 'userId',
+			select: { name: 1, path: 1 },
+		});
+
+		res.status(status.OK).send({
+			savedComment: {
+				replies: [],
+				text: populatedComment.text,
+				userId: populatedComment.userId,
+			},
+			Message: 'Comment Created Successfully',
+			type: status.Ok,
+		});
+	} catch (err) {
+		res.status(status.INTERNAL_SERVER_ERROR).send({
+			err,
+			Message: 'Can not create Comment ',
+		});
+	}
 };
 
 // deleting Comment

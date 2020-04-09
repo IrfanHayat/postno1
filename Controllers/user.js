@@ -1,17 +1,18 @@
 import status from 'http-status';
-import Model from '../Models/Model';
+import jwt from 'jsonwebtoken';
+import User from '../Models/userSchema';
 
-const getUserProfile = async (req, res, next) => {
+const getUserProfile = async (req, res) => {
+	const token = req.headers.authorization.split(' ')[1];
+	console.log(token);
 	try {
-		const user = await Model.UserModel.findOne({});
-		if (user) {
-			res.status(200).json({ user });
-		} else {
-			res.status(status.INTERNAL_SERVER_ERROR).json({ message: 'There is no user' });
-		}
+		const decoded = jwt.verify(token, process.env.JwtSecret);
+		req.userData = decoded;
+		const user = await User.findOne({ _id: req.userData._id }, { name: 1, email: 1, imageUrl: 1 });
+
+		res.status(200).json(user);
 	} catch (error) {
-		res.status(500);
-		next(new Error('Error occured'));
+		res.status(status.UNAUTHORIZED).json({ error });
 	}
 };
 

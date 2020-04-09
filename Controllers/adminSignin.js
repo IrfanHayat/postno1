@@ -22,6 +22,9 @@ const createToken = (user, res, next) => {
 			} else {
 				res.json({
 					token,
+					email,
+					name,
+					userType,
 				});
 			}
 		},

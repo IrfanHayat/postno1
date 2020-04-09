@@ -1,11 +1,10 @@
 import Model from '../Models/Model';
 
-const addRating = async (req, res, next) => {
-	const { resourceId, rating, userId } = req.body;
+const addRating = async (req, res) => {
+	const { resourceId, rating } = req.body;
 	const ratingAdd = new Model.RatingModel({
 		resourceId,
 		rating,
-		userId,
 	});
 	const savedRating = await ratingAdd.save();
 	if (savedRating) {
@@ -16,10 +15,9 @@ const addRating = async (req, res, next) => {
 	}
 };
 
-const deleteRating = async (req, res, next) => {
-	const { resourceId, userId } = req.body;
+const deleteRating = async (req, res) => {
 	const { _id } = req.params;
-	const deleterating = await Model.RatingModel.deleteOne({ _id, resourceId, userId });
+	const deleterating = await Model.RatingModel.deleteOne({ _id });
 	res.status(200).json({ deleterating });
 };
 

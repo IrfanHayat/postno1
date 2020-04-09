@@ -2,18 +2,66 @@ import status from 'http-status';
 import Model from '../Models/Model';
 import awsHandler from './aws';
 
+const articleCommentPopulationOptions = {
+	path: 'comments',
+	select: {
+		text: 1,
+		userId: 1,
+		replies: 1,
+	},
+	populate: [
+		{
+			path: 'userId',
+			select: {
+				name: 1,
+				imageUrl: 1,
+			},
+		},
+		{
+			path: 'replies',
+			select: {
+				text: 1,
+				userId: 1,
+				replies: 1,
+			},
+			populate: 'userId',
+			select: {
+				name: 1,
+				imageUrl: 1,
+			},
+		},
+	],
+};
+
 const addArticle = async (req, res, next) => {
-	const { postBy, description, mediaUrl, category, rating } = req.body;
+	console.log(req.user);
+	const { description, mediaUrl, mediaType, category, rating } = req.body;
+	let { postRate } = req.body;
 	if (mediaUrl !== '' && req.file !== undefined) {
 		const url = await awsHandler.UploadToAws(req.file);
+
+		const count = await Model.ArticleModel.find().count();
+		console.log(count);
+		console.log(postRate);
+		if (count == 0) {
+			postRate = 1;
+		} else if (count > 0) {
+			const articleRate = await Model.ArticleModel.findOne({}, { postRate: 1 }).sort({ _id: -1 });
+			postRate = articleRate.postRate + articleRate.postRate;
+		} else {
+			res.status(500).json({ message: 'Post Rate must be 1$' });
+		}
 		try {
 			const article = new Model.ArticleModel({
-				postBy,
+				postBy: req.user._id,
 				description,
 				mediaUrl: url,
+				mediaType,
 				category,
 				rating,
+				postRate,
 			});
+
 			const savedArticle = await article.save();
 			if (savedArticle) {
 				const postData = await Model.UserModel.findOne({ _id: savedArticle.postBy });
@@ -40,8 +88,8 @@ const addArticle = async (req, res, next) => {
 };
 
 const deleteArticle = async (req, res) => {
-	const { id } = req.params;
-	const result = await Model.ArticleModel.findByIdAndRemove(id);
+	const { _id } = req.params;
+	const result = await Model.ArticleModel.findByIdAndRemove(_id);
 	if (result) {
 		res.status(status.OK).send({
 			Message: 'Post Deleted Successfully.',
@@ -55,8 +103,8 @@ const deleteArticle = async (req, res) => {
 
 const getAllArticles = async (req, res) => {
 	const article = await Model.ArticleModel.find({})
+		.populate(articleCommentPopulationOptions)
 		.populate('postBy')
-
 		.populate('category')
 		.populate('rating');
 	if (article) {
@@ -72,10 +120,12 @@ const getAllArticles = async (req, res) => {
 
 const getTopArticle = async (req, res) => {
 	const topArticle = await Model.ArticleModel.findOne({})
+		.populate(articleCommentPopulationOptions)
 		.populate('category')
 		.populate('postBy')
 		.populate('rating')
 		.sort({ _id: -1 });
+
 	if (topArticle) {
 		res.status(status.OK).send({
 			topArticle,

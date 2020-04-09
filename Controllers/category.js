@@ -46,8 +46,33 @@ const getAllCategory = async (req, res, next) => {
 	}
 };
 
+const updateCategory = async (req, res, next) => {
+	const { category } = req.body;
+	const { _id } = req.params;
+	const image = await awsHandler.UploadToAws(req.file);
+	try {
+		const updatecategory = await Model.CategoryModel.findByIdAndUpdate(
+			{ _id },
+			{
+				$set: {
+					category,
+					imageUrl: image,
+				},
+			},
+		);
+		if (updatecategory) {
+			res.status(200).json(updatecategory);
+		} else {
+			res.status(status.INTERNAL_SERVER_ERROR).json('Data not update successfully');
+		}
+	} catch (error) {
+		res.status(500);
+		next(new Error(error));
+	}
+};
+
 const deleteCategory = async (req, res, next) => {
-	const { _id } = req.body;
+	const { _id } = req.params;
 	try {
 		const deletecategory = await Model.CategoryModel.deleteOne({ _id });
 		if (deletecategory) {
@@ -61,4 +86,4 @@ const deleteCategory = async (req, res, next) => {
 	}
 };
 
-export default { addCategory, deleteCategory, getAllCategory };
+export default { addCategory, deleteCategory, getAllCategory, updateCategory };

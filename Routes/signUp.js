@@ -12,6 +12,6 @@ const signUpRouter = express.Router();
 
 signUpRouter.post('/', upload.single('imageUrl'), userValidator.userSignup, userSignUp);
 
-signUpRouter.post('/guest', upload.single('imageUrl'), userValidator.guestSignup, guestReg);
+signUpRouter.post('/guest', guestReg);
 
 export default signUpRouter;

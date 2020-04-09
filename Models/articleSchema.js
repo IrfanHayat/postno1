@@ -6,6 +6,9 @@ const ArticleSchema = new mongoose.Schema(
 			type: mongoose.Schema.Types.ObjectId,
 			ref: 'User',
 		},
+		title: {
+			type: String,
+		},
 		description: {
 			type: String,
 			required: true,
@@ -14,7 +17,12 @@ const ArticleSchema = new mongoose.Schema(
 			type: String,
 			required: true,
 		},
-		rating: { type: mongoose.Schema.Types.ObjectId, ref: 'rating' },
+		mediaType: {
+			type: String,
+		},
+
+		postRate: { type: Number },
+		rating: [{ type: mongoose.Schema.Types.ObjectId, ref: 'rating' }],
 		category: { type: mongoose.Schema.Types.ObjectId, ref: 'category' },
 		comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }],
 	},

@@ -6,15 +6,12 @@ const RatingSchema = new mongoose.Schema(
 			type: mongoose.Schema.Types.ObjectId,
 			ref: 'Article',
 		},
-		rating: {
-			type: String,
-			required: true,
-		},
-
-		userId: {
-			type: mongoose.Schema.Types.ObjectId,
-			ref: 'User',
-		},
+		rating: [
+			{
+				type: String,
+				required: true,
+			},
+		],
 	},
 	{
 		timestamps: true,
