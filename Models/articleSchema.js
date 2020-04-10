@@ -21,7 +21,7 @@ const ArticleSchema = new mongoose.Schema(
 			type: String,
 		},
 		postRate: { type: Number },
-		rating: [{ type: mongoose.Schema.Types.ObjectId, ref: 'rating' }],
+		ratings: [{ type: mongoose.Schema.Types.ObjectId, ref: 'rating' }],
 		category: { type: mongoose.Schema.Types.ObjectId, ref: 'category' },
 		comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }],
 	},
