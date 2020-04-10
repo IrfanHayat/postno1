@@ -22,7 +22,6 @@ const articleCommentPopulationOptions = {
 			select: {
 				text: 1,
 				userId: 1,
-				replies: 1,
 			},
 			populate: {
 				path: 'userId',

@@ -5,10 +5,10 @@ import status from 'http-status';
 import Model from '../Models/Model';
 
 const addCommentReply = (req, res) => {
-	const { commentId, reply } = req.body;
+	const { commentId, text } = req.body;
 	Model.CommentModel.findOneAndUpdate(
 		{ _id: commentId },
-		{ $push: { replies: reply } },
+		{ $push: { replies: { text, userId: req.user._id } } },
 		{ upsert: true, new: true },
 
 		(err, doc) => {
@@ -20,7 +20,6 @@ const addCommentReply = (req, res) => {
 		},
 	);
 };
-
 const deleteCommentReply = (req, res) => {
 	const { commentId, replyId } = req.body;
 	Model.CommentModel.updateOne({ _id: commentId }, { $pull: { replies: { _id: replyId } } }, { multi: true }, err => {

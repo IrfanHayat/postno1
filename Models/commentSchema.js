@@ -6,6 +6,7 @@ const CommentSchema = new mongoose.Schema(
 			type: mongoose.Schema.Types.ObjectId,
 			ref: 'Article',
 		},
+
 		text: {
 			type: String,
 			required: true,
@@ -13,6 +14,40 @@ const CommentSchema = new mongoose.Schema(
 		replies: [
 			{
 				text: {
+					type: String,
+					required: true,
+				},
+				userId: {
+					type: mongoose.Schema.Types.ObjectId,
+					ref: 'User',
+				},
+				createdAt: {
+					type: Date,
+					default: Date.now(),
+				},
+			},
+		],
+		userVoteStatus: {
+			upvote: {
+				type: Boolean,
+				default: false,
+			},
+			downvote: {
+				type: Boolean,
+				default: false,
+			},
+		},
+		upvoteCount: {
+			type: Number,
+			default: 0,
+		},
+		downvoteCount: {
+			type: Number,
+			default: 0,
+		},
+		votes: [
+			{
+				type: {
 					type: String,
 					required: true,
 				},
