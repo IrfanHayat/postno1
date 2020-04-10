@@ -10,12 +10,7 @@ commentRouter.post('/add', loggedInMiddleware.isLoggedIn, commentValidator.addCo
 
 commentRouter.delete('/delete/:id', loggedInMiddleware.isLoggedIn, commentArticle.deleteComment);
 
-commentRouter.patch(
-	'/reply/add',
-	loggedInMiddleware.isLoggedIn,
-	commentValidator.addCommentReply,
-	commentArticle.addCommentReply,
-);
+commentRouter.patch('/reply/add', loggedInMiddleware.isLoggedIn, commentArticle.addCommentReply);
 
 commentRouter.patch(
 	'/reply/delete',

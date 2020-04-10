@@ -51,6 +51,8 @@ app.use('/rating', Router.RatingRouter);
 
 app.use('/user', Router.UserRouter);
 
+app.use('/commentlike', Router.commentLikeRouter);
+
 app.use(errorHandler);
 
 const port = process.env.PORT || 5000;

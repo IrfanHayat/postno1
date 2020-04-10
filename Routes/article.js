@@ -16,5 +16,6 @@ articleRouter.post('/add', loggedInMiddleware.isLoggedIn, upload.single('mediaUr
 articleRouter.get('/get', loggedInMiddleware.isLoggedIn, article.getAllArticles);
 articleRouter.get('/top', loggedInMiddleware.isLoggedIn, article.getTopArticle);
 articleRouter.delete('/delete/:id', loggedInMiddleware.isLoggedIn, article.deleteArticle);
+articleRouter.get('/getPostRate', loggedInMiddleware.isLoggedIn, article.getCurrentPostRate);
 
 export default articleRouter;

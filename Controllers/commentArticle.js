@@ -4,22 +4,41 @@
 import status from 'http-status';
 import Model from '../Models/Model';
 
-const addCommentReply = (req, res) => {
+const addCommentReply = async (req, res) => {
 	const { commentId, text } = req.body;
-	Model.CommentModel.findOneAndUpdate(
-		{ _id: commentId },
-		{ $push: { replies: { text, userId: req.user._id } } },
-		{ upsert: true, new: true },
 
-		(err, doc) => {
-			if (err) {
-				res.status(500).send({ Message: 'Internal Server error. Cannot add reply' });
-			} else {
-				res.status(200).send(doc.replies[doc.replies.length - 1]);
-			}
-		},
-	);
+	try {
+		const comment = await Model.CommentModel.findByIdAndUpdate(
+			commentId,
+			{
+				$push: {
+					replies: {
+						text,
+						userId: req.user._id,
+					},
+				},
+			},
+			{
+				new: true,
+				upsert: true,
+			},
+		);
+
+		const user = await Model.UserModel.findById(req.user._id, {
+			name: 1,
+			imageUrl: 1,
+		});
+
+		res.status(200).json({
+			text,
+			userId: user,
+			_id: comment.replies[comment.replies.length - 1],
+		});
+	} catch (error) {
+		res.status(500).send('internal server error');
+	}
 };
+
 const deleteCommentReply = (req, res) => {
 	const { commentId, replyId } = req.body;
 	Model.CommentModel.updateOne({ _id: commentId }, { $pull: { replies: { _id: replyId } } }, { multi: true }, err => {

@@ -6,6 +6,7 @@ import CommentRouter from './comment';
 import CategoryRouter from './category';
 import RatingRouter from './rating';
 import UserRouter from './user';
+import commentLikeRouter from './commentLikes';
 
 export default {
 	SignupRouter,
@@ -16,4 +17,5 @@ export default {
 	CategoryRouter,
 	RatingRouter,
 	UserRouter,
+	commentLikeRouter,
 };

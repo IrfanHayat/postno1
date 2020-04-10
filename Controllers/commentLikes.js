@@ -5,14 +5,15 @@ import Model from '../Models/Model';
 // voting on article {upvoting or downvoting}
 // resourceId is id of article
 const voteComment = (req, res, next) => {
-	const { resourceId, vote } = req.body;
-	Model.CategoryModel.find({ _id: resourceId })
+	const { _id, resourceId, vote } = req.body;
+	Model.CommentModel.find({ _id, resourceId })
 		// newVote and prevVote for checking if we need to add remove vote and then add new vote or just need to remove vote
 		.then(comment => {
 			let newType = '';
 			let prevType = '';
 			let upvoteCount = 0;
 			let downvoteCount = 0;
+			console.log(comment[0].votes.length);
 			if (comment[0].votes.length > 0) {
 				comment[0].votes.map((el, index) => {
 					// here we are checking if user has voted before then first we will delete previous vote first
@@ -24,9 +25,7 @@ const voteComment = (req, res, next) => {
 					}
 				});
 			}
-			// if newVote  and prevVote are '' then it means there was no vote of user before then we will simply add new vote
-			// if newVote and prevVote are not '' and are equal then it means user want to remove his vote by repeating same type of vote {{ type means upvote or downvote}}
-			// if newVote and prevVote are not '' amd are not equal it means user want to change his vote type
+
 			if (newType !== '' && newType === prevType) {
 				comment[0].userVoteStatus.downvote = false;
 				comment[0].userVoteStatus.upvote = false;
@@ -83,6 +82,4 @@ const voteComment = (req, res, next) => {
 		});
 };
 
-export default {
-	voteComment,
-};
+export default voteComment;

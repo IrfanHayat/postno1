@@ -23,9 +23,9 @@ const deleteCommentReply = (req, res, next) => {
 };
 
 const addCommentReply = (req, res, next) => {
-	const { commentId, reply } = req.body;
+	const { commentId, text } = req.body;
 
-	if (!commentId || !reply || !reply.text || !reply.userId) {
+	if (!commentId || !text) {
 		res.status(status.BAD_REQUEST);
 		next(new Error('commentID, text and userId Must be Defined in request body'));
 	} else {

@@ -11,24 +11,17 @@ const articleCommentPopulationOptions = {
 	},
 	populate: [
 		{
-			path: 'userId',
+			path: 'replies.userId',
 			select: {
 				name: 1,
 				imageUrl: 1,
 			},
 		},
 		{
-			path: 'replies',
+			path: 'userId',
 			select: {
-				text: 1,
-				userId: 1,
-			},
-			populate: {
-				path: 'userId',
-				select: {
-					name: 1,
-					imageUrl: 1,
-				},
+				name: 1,
+				imageUrl: 1,
 			},
 		},
 	],
@@ -46,6 +39,22 @@ const articleRatingsPopulateOptions = {
 			imageUrl: 1,
 		},
 	},
+};
+
+const getCurrentPostRate = async (req, res) => {
+	try {
+		const article = await Model.ArticleModel.findOne({}, { postRate: 1 }).sort({ postRate: -1 });
+
+		const rate = article.postRate;
+
+		res.status(status.OK).json({
+			currentRate: rate * 2,
+		});
+	} catch (error) {
+		console.log(error);
+
+		res.status(status.INTERNAL_SERVER_ERROR).send('internal server error');
+	}
 };
 
 const addArticle = async (req, res, next) => {
@@ -120,6 +129,7 @@ const deleteArticle = async (req, res) => {
 
 const getAllArticles = async (req, res) => {
 	const article = await Model.ArticleModel.find({})
+		.sort({ createdAt: -1 })
 		.populate(articleCommentPopulationOptions)
 		.populate(articleRatingsPopulateOptions)
 		.populate('category')
@@ -159,4 +169,5 @@ export default {
 	getAllArticles,
 	getTopArticle,
 	deleteArticle,
+	getCurrentPostRate,
 };
