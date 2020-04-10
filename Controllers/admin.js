@@ -113,7 +113,7 @@ const getArticles = (req, res) => {
 
 const addArticle = post => {
 	return new Promise((resolve, reject) => {
-		const { postBy, description, title, filter, file } = post;
+		const { postBy, description, title, file } = post;
 		// comma separating tag values
 		if (file !== '' && file !== undefined) {
 			awsHandler
@@ -145,16 +145,16 @@ const addArticle = post => {
 };
 
 const addArticlesByAdmin = (req, res) => {
-	const { title, description, postBy, filter } = req.body;
+	const { title, description } = req.body;
 
-	if (req.files.length > 0 && title.length > 0 && description.length > 0 && postBy.length > 0) {
+	if (req.files.length > 0 && title.length > 0 && description.length > 0) {
 		let success = true;
 		req.files.map((file, index) => {
 			const post = {
+				postBy: req.user._id,
 				mediaUrl: file,
 				title: title[index],
 				description: description[index],
-				postBy: postBy[index],
 			};
 			addArticle(post)
 				.then(savedDoc => {

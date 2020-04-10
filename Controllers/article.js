@@ -24,17 +24,32 @@ const articleCommentPopulationOptions = {
 				userId: 1,
 				replies: 1,
 			},
-			populate: 'userId',
-			select: {
-				name: 1,
-				imageUrl: 1,
+			populate: {
+				path: 'userId',
+				select: {
+					name: 1,
+					imageUrl: 1,
+				},
 			},
 		},
 	],
 };
 
+const articleRatingsPopulateOptions = {
+	path: 'ratings',
+	select: {
+		rating: 1,
+	},
+	populate: {
+		path: 'ratedBy',
+		select: {
+			name: 1,
+			imageUrl: 1,
+		},
+	},
+};
+
 const addArticle = async (req, res, next) => {
-	console.log(req.user);
 	const { description, mediaUrl, mediaType, category, rating } = req.body;
 	let { postRate } = req.body;
 	if (mediaUrl !== '' && req.file !== undefined) {
@@ -86,27 +101,30 @@ const addArticle = async (req, res, next) => {
 		next(new Error('Image is required'));
 	}
 };
-
 const deleteArticle = async (req, res) => {
-	const { _id } = req.params;
-	const result = await Model.ArticleModel.findByIdAndRemove(_id);
-	if (result) {
-		res.status(status.OK).send({
-			Message: 'Post Deleted Successfully.',
-		});
+	if (req.user.userType == 'guest') {
+		res.status(401).json({ message: 'sorry you are not authorize' });
 	} else {
-		res.status(status.INTERNAL_SERVER_ERROR).send({
-			Message: 'Unable to Delete.',
-		});
+		const { _id } = req.params;
+		const result = await Model.ArticleModel.findByIdAndRemove(_id);
+		if (result) {
+			res.status(status.OK).send({
+				Message: 'Post Deleted Successfully.',
+			});
+		} else {
+			res.status(status.INTERNAL_SERVER_ERROR).send({
+				Message: 'Unable to Delete.',
+			});
+		}
 	}
 }; //
 
 const getAllArticles = async (req, res) => {
 	const article = await Model.ArticleModel.find({})
 		.populate(articleCommentPopulationOptions)
-		.populate('postBy')
+		.populate(articleRatingsPopulateOptions)
 		.populate('category')
-		.populate('rating');
+		.populate('postBy');
 	if (article) {
 		res.status(status.OK).send({
 			article,
@@ -121,9 +139,9 @@ const getAllArticles = async (req, res) => {
 const getTopArticle = async (req, res) => {
 	const topArticle = await Model.ArticleModel.findOne({})
 		.populate(articleCommentPopulationOptions)
+		.populate(articleRatingsPopulateOptions)
 		.populate('category')
 		.populate('postBy')
-		.populate('rating')
 		.sort({ _id: -1 });
 
 	if (topArticle) {

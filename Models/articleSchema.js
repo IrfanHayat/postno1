@@ -20,7 +20,6 @@ const ArticleSchema = new mongoose.Schema(
 		mediaType: {
 			type: String,
 		},
-
 		postRate: { type: Number },
 		rating: [{ type: mongoose.Schema.Types.ObjectId, ref: 'rating' }],
 		category: { type: mongoose.Schema.Types.ObjectId, ref: 'category' },
